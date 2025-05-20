@@ -1,32 +1,31 @@
 const findTheOldest = function (people) {
-    let oldest = null;
-    let highestAge = 0;
-    for (person of people) {
-        let calculatedAge = 0;
-        if ('yearOfDeath' in person) {
-            calculatedAge = calculateAge(person.yearOfBirth, person.yearOfDeath);
-        } else {
-            currentDate = new Date();
-            calculatedAge = calculateAge(person.yearOfBirth, currentDate.getFullYear());
-        }
+    if (people.length === 0) return null;
 
-        if (calculatedAge > highestAge) {
-            oldest = person;
-            highestAge = calculatedAge;
+    let highestAge = 0;
+    return people.reduce((oldestPerson, currentPerson) => {
+        const currentAge = calculateAge(currentPerson.yearOfBirth, currentPerson.yearOfDeath);
+
+        if (currentAge > highestAge) {
+            highestAge = currentAge;
+            return currentPerson;
         }
-    }
-    return oldest;
-};
+        return oldestPerson;
+    }, people[0]);
+}
 
 const calculateAge = function (birthYear, finalYear) {
-    if (birthYear < 0 && finalYear < 0) {
-        return Math.abs(finalYear) - Math.abs(birthYear);
+    let currentDate = new Date();
+    let expirationYear = finalYear ?? currentDate.getFullYear();
+    //Handle ancient beings
+    if (birthYear < 0 && expirationYear < 0) {
+        return Math.abs(expirationYear) - Math.abs(birthYear);
     } else if (birthYear < 0) {
-        return finalYear - Math.abs(birthYear);
+        return expirationYear - Math.abs(birthYear);
     }
-    return finalYear - birthYear;
+    //They're not ancient, calculate age
+    return expirationYear - birthYear;
 };
-debugger;
+
 findTheOldest([
     {
         name: "Carly",
